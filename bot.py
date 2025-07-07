@@ -1,12 +1,14 @@
 import requests
 import time
 import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # === CONFIGURATION ===
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 API_URL = f"https://api.telegram.org/bot{TOKEN}"
 CHANNEL_USERNAME = "@spiritychannel"
-ACCESS_CODE = "P3X7V9Q2L8ZD5NM1KT4J"
+ACCESS_CODE = os.getenv("ACCESS_CODE", "P3X7V9Q2L8ZD5NM1KT4J")
 APP_URL = "https://spirityx.github.io/Ghostpqqb-/"
 
 user_states = {}
@@ -33,10 +35,23 @@ def check_user_in_channel(user_id):
     status = res.get("result", {}).get("status")
     return status in ["member", "creator", "administrator"]
 
+def run_dummy_server():
+    class DummyHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"Bot is running!")
+    
+    server = HTTPServer(("", 10000), DummyHandler)
+    server.serve_forever()
+
 def main():
     print("🤖 Bot lancé.")
-    offset = None
+    
+    # Lancement du serveur HTTP parallèle pour Render
+    threading.Thread(target=run_dummy_server, daemon=True).start()
 
+    offset = None
     while True:
         updates = get_updates(offset)
         if updates.get("ok"):
@@ -164,7 +179,6 @@ def main():
                             "🛠️ C’est obligatoire pour débloquer les prédictions.\n\n"
                             "🔥 Let’s go — on passe au niveau supérieur ! t.me/spiritychannel"
                         )
-
         time.sleep(1)
 
 if __name__ == "__main__":
