@@ -1,12 +1,12 @@
-":
-    main() unimport requests
+import requests
 import time
 import os
 
+# === CONFIGURATION ===
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 API_URL = f"https://api.telegram.org/bot{TOKEN}"
 CHANNEL_USERNAME = "@spiritychannel"
-ACCESS_CODE = os.getenv("ACCESS_CODE", "P3X7V9Q2L8ZD5NM1KT4J")
+ACCESS_CODE = "P3X7V9Q2L8ZD5NM1KT4J"
 APP_URL = "https://spirityx.github.io/Ghostpqqb-/"
 
 user_states = {}
